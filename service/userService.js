@@ -13,4 +13,17 @@ async function salvaUser(nome, email, senha) {
   return newUser;
 }
 
-module.exports = { salvaUser };
+async function buscaUser(email) {
+  const user = await User.findOne({ where: { email } });
+  return user;
+}
+
+async function buscaUserById(userToken) {
+  const user = await User.findByPk(userToken.userId, {
+    attributes: { exclude: ["senha"] },
+  });
+  return user;
+}
+
+// await User.findOne({ where: { email } });
+module.exports = { salvaUser, buscaUser, buscaUserById };
