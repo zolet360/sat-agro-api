@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { salvaUser, buscaUser, buscaUserById } = require("../service/userService");
+const { salvaUser, buscaUser, buscaUserById, editaUser } = require("../service/userService");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const authenticate = require("../middleware/authenticate");
@@ -51,6 +51,18 @@ router.get("/me", authenticate, async (req, res) => {
   } catch (error) {
     console.error("Error fetching user data:", error);
     res.status(500).json({ error: "Something went wrong" });
+  }
+});
+
+router.put("/:id", authenticate, async (req, res) => {
+  const { id } = req.params;
+  const { nome, email } = req.body;
+  try {
+    const user = await editaUser(id, email, nome);
+    console.log(user);
+    res.json(user);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
   }
 });
 

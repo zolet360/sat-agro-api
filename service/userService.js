@@ -25,5 +25,16 @@ async function buscaUserById(userToken) {
   return user;
 }
 
-// await User.findOne({ where: { email } });
-module.exports = { salvaUser, buscaUser, buscaUserById };
+async function editaUser(id, email, nome) {
+  const user = await User.findByPk(id);
+  const userByEmail = await buscaUser(email);
+  if (userByEmail && userByEmail.id !== user.id) {
+    throw new Error("E-mail ja em uso!");
+  }
+  user.nome = nome;
+  user.email = email;
+  await user.save();
+  return user;
+}
+
+module.exports = { salvaUser, buscaUser, buscaUserById, editaUser };
