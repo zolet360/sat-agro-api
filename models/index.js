@@ -23,7 +23,6 @@ fs.readdirSync(modelsDirectory)
     return file.indexOf(".") !== 0 && file !== basename && file.slice(-3) === ".js";
   })
   .forEach((file) => {
-    console.log(`Loading model file: ${file}`);
     const model = require(path.join(modelsDirectory, file))(sequelize, Sequelize.DataTypes);
     db[model.name] = model;
   });
@@ -31,7 +30,6 @@ fs.readdirSync(modelsDirectory)
 // Configurar associações após todos os modelos serem carregados
 Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {
-    console.log(`Associating ${modelName}`);
     db[modelName].associate(db);
   }
 });

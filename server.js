@@ -11,6 +11,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.json({ limit: "100mb" }));
 app.use(bodyParser.urlencoded({ limit: "100mb", extended: true }));
 
+const { initializeGEE } = require("./service/geeService"); // Importa corretamente a função
+
 sequelize
   .authenticate()
   .then(() => {
@@ -29,12 +31,18 @@ db.sequelize
     console.error("Error synchronizing database:", err);
   });
 
+initializeGEE()
+  .then(() => {
+    console.log("Google Earth Engine inicializado com sucesso!");
+  })
+  .catch(console.error);
+
 const userRoutes = require("./routes/user");
+const imageRoutes = require("./routes/imageRoute");
 
-// // Usar rotas
 app.use("/user", userRoutes);
+app.use("/image", imageRoutes);
 
-// Inicia o servidor
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
