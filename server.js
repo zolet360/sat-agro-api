@@ -39,9 +39,11 @@ initializeGEE()
 
 const userRoutes = require("./routes/user");
 const imageRoutes = require("./routes/imageRoute");
+const parametroRoutes = require("./routes/parametro");
 
 app.use("/user", userRoutes);
 app.use("/image", imageRoutes);
+app.use("/parametro", parametroRoutes);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
