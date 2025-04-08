@@ -6,7 +6,7 @@ const ee = require("@google/earthengine");
 function initializeGEE() {
   return new Promise((resolve, reject) => {
     ee.data.authenticateViaPrivateKey(
-      require("../credentials/satagro-435200-aaca9b29fab5.json"),
+      require("../credentials/satagro-435200-49518d0863c9.json"),
       () => {
         ee.initialize(null, null, resolve, reject);
       },

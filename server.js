@@ -35,15 +35,19 @@ initializeGEE()
   .then(() => {
     console.log("Google Earth Engine inicializado com sucesso!");
   })
-  .catch(console.error);
+  .catch((erro) => {
+    console.error("Erro ao inicializar GEE:", erro);
+  });
 
 const userRoutes = require("./routes/user");
 const imageRoutes = require("./routes/imageRoute");
 const parametroRoutes = require("./routes/parametro");
+const analiseRoutes = require("./routes/analise");
 
 app.use("/user", userRoutes);
 app.use("/image", imageRoutes);
 app.use("/parametro", parametroRoutes);
+app.use("/analise", analiseRoutes);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {

@@ -15,57 +15,57 @@ const getImage = async (lat1, lon1, lat2, lon2, lat3, lon3, lat4, lon4, inicio, 
     throw new Error("Data de início e fim são obrigatórias");
   }
 
-  // Filtrando imagens com menos de 5% de nuvens
-  const image = ee
-    .ImageCollection("COPERNICUS/S2")
-    .filterBounds(polygon)
-    .filterDate(inicio, fim)
-    .filter(ee.Filter.lt("CLOUDY_PIXEL_PERCENTAGE", 5)) // Reduzindo nuvens ao mínimo
-    .sort("CLOUDY_PIXEL_PERCENTAGE")
-    .first();
+  const image = ee.ImageCollection("COPERNICUS/S2").filterBounds(polygon).filterDate(inicio, fim).filter(ee.Filter.lt("CLOUDY_PIXEL_PERCENTAGE", 5)).sort("CLOUDY_PIXEL_PERCENTAGE").first();
 
-  if (!image) {
-    throw new Error("Nenhuma imagem disponível para o período e área selecionada.");
+  // Pega a data da imagem (em milissegundos)
+  const timestamp = await image.get("system:time_start").getInfo();
+  if (!timestamp) {
+    throw new Error("Não foi possível obter a data da imagem.");
   }
+  const dateCaptured = new Date(timestamp).toISOString().split("T")[0];
 
-  // Calculando NDVI com melhor precisão
+  // Calcula NDVI
   const ndvi = image.normalizedDifference(["B8", "B4"]).rename("NDVI");
 
   const stats = ndvi.reduceRegion({
     reducer: ee.Reducer.mean(),
     geometry: polygon,
-    scale: 5, // Melhor precisão
+    scale: 10,
     bestEffort: true,
   });
 
   const ndviValue = await stats.get("NDVI").getInfo();
 
-  // Configuração RGB aprimorada para melhor visualização
+  // Visualização RGB
   const rgbImage = image.select(["B4", "B3", "B2"]).visualize({
-    min: 500, // Melhor contraste
+    min: 500,
     max: 4000,
-    gamma: 1.3, // Ajuste para melhor nitidez
+    gamma: 1.3,
   });
 
-  // Ajuste NDVI com cores mais perceptíveis
+  // Visualização NDVI
   const ndviVis = ndvi.visualize({
     min: -0.2,
     max: 1,
-    palette: ["brown", "yellow", "green"], // Mais contraste visual
+    palette: ["brown", "yellow", "green"],
   });
 
-  // Melhorando a qualidade das imagens geradas
   const urlNdvi = await ndviVis.getThumbURL({
     region: polygon,
-    scale: 5, // Melhora definição
+    scale: 10,
   });
 
   const url = await rgbImage.getThumbURL({
     region: polygon,
-    scale: 5, // Redução melhora definição
+    scale: 10,
   });
 
-  return { url, ndviValue, urlNdvi };
+  return {
+    url,
+    urlNdvi,
+    ndviValue,
+    dateCaptured, // retorna a data
+  };
 };
 
 module.exports = { getImage };
