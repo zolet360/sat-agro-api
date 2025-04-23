@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const authenticate = require("../middleware/authenticate");
-const { salvaImagem } = require("../service/AnaliseService");
+const { salvaImagem, buscaAnalises } = require("../service/AnaliseService");
 
 router.post("/", authenticate, async (req, res) => {
   console.log(req.body);
@@ -13,6 +13,21 @@ router.post("/", authenticate, async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(400).json({ message: error.message });
+  }
+});
+
+router.get("/:id/:page", authenticate, async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log(id);
+    const imagens = await buscaAnalises(id, 1);
+    if (!imagens) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.json(imagens);
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    res.status(500).json({ error: "Something went wrong" });
   }
 });
 

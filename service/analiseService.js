@@ -14,4 +14,20 @@ async function salvaImagem(titulo, dataImagem, user_id, ndvi, path) {
   return newAnalise;
 }
 
-module.exports = { salvaImagem };
+async function buscaAnalises(user_id, page) {
+  const limit = 4;
+  const offset = (page - 1) * limit;
+  const { count, rows } = await Analise.findAndCountAll({
+    where: {
+      user_id: user_id,
+    },
+    limit,
+    offset,
+    order: [["createdAt", "DESC"]],
+  });
+  const totalPages = Math.ceil(count / limit);
+
+  return { rows, count, totalPages, page };
+}
+
+module.exports = { salvaImagem, buscaAnalises };
