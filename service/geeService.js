@@ -1,3 +1,4 @@
+require("dotenv").config();
 const ee = require("@google/earthengine");
 
 /**
@@ -6,7 +7,7 @@ const ee = require("@google/earthengine");
 function initializeGEE() {
   return new Promise((resolve, reject) => {
     ee.data.authenticateViaPrivateKey(
-      require("../credentials/satagro-435200-49518d0863c9.json"),
+      require(process.env.GEE_CREDENTIALS_PATH),
       () => {
         ee.initialize(null, null, resolve, reject);
       },
