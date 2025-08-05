@@ -1,13 +1,12 @@
 require("dotenv").config();
 const ee = require("@google/earthengine");
 
-/**
- * Função para inicializar a API do Google Earth Engine
- */
+const geeCredentials = JSON.parse(process.env.GEE_CREDENTIALS_PATH);
+
 function initializeGEE() {
   return new Promise((resolve, reject) => {
     ee.data.authenticateViaPrivateKey(
-      require(process.env.GEE_CREDENTIALS_PATH),
+      geeCredentials,
       () => {
         ee.initialize(null, null, resolve, reject);
       },
