@@ -4,7 +4,6 @@ const bodyParser = require("body-parser");
 const sequelize = require("./config/database");
 const db = require("./models");
 const app = express();
-const json = require("./credentials/satagro-435200-49518d0863c9.json");
 
 const cors = require("cors");
 app.use(cors());
@@ -35,7 +34,6 @@ db.sequelize
 
 initializeGEE()
   .then(() => {
-    console.log(JSON.stringify(json));
     console.log("Google Earth Engine inicializado com sucesso!");
   })
   .catch((erro) => {
