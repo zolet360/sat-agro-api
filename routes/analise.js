@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const authenticate = require("../middleware/authenticate");
-const { salvaImagem, buscaAnalises } = require("../service/AnaliseService");
+const { salvaImagem, buscaAnalises } = require("../service/analiseService.js");
 
 router.post("/", authenticate, async (req, res) => {
   console.log(req.body);
