@@ -18,9 +18,9 @@ router.post("/", authenticate, async (req, res) => {
 
 router.get("/:id/:page", authenticate, async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id, page } = req.params;
     console.log(id);
-    const imagens = await buscaAnalises(id, 1);
+    const imagens = await buscaAnalises(id, page);
     if (!imagens) {
       return res.status(404).json({ error: "User not found" });
     }
